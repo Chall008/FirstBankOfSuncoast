@@ -94,7 +94,37 @@ namespace FirstBankOfSuncoast
 
                     userHasChosenToQuit = true;
                 }
+                var totalChecking = transactions.Where(transaction => transaction.Account == "CHECKING");
+                var totalSavings = transactions.Where(transaction => transaction.Account == "SAVINGS");
+                var totalAmountInChecking = 0;
+                var totalAmountInSavings = 0;
+                foreach (var transaction in totalChecking)
+                {
+                    if (transaction.Type == "DEPOSIT")
+                    {
+                        totalAmountInChecking = totalAmountInChecking + transaction.Amount;
 
+
+                    }
+                    else
+                    {
+                        totalAmountInChecking = totalAmountInChecking - transaction.Amount;
+
+                    }
+
+                }
+                foreach (var transaction in totalSavings)
+                {
+                    if (transaction.Type == "DEPOSIT")
+                    {
+                        totalAmountInSavings = totalAmountInSavings + transaction.Amount;
+
+                    }
+                    else
+                    {
+                        totalAmountInSavings = totalAmountInSavings - transaction.Amount;
+                    }
+                }
                 switch (choice)
                 {
                     // case "Deposit":
@@ -103,21 +133,20 @@ namespace FirstBankOfSuncoast
                         Console.WriteLine("Do you want to deposit into Checking or Savings?");
                         var whereDepositIsGoing = Console.ReadLine().Trim().ToUpper();
                         Console.WriteLine($"How much into {whereDepositIsGoing}?");
-                        var amountOfDeposit = Console.ReadLine().Trim().ToUpper();
+                        var amountOfDeposit = Console.ReadLine();
                         var howMuchDeposit = int.Parse(amountOfDeposit);
 
 
                         var newDeposit = new Transaction()
                         {
                             Account = whereDepositIsGoing,
-                            // Amount = amountOfDeposit,
-
-
-
-
+                            Amount = howMuchDeposit,
+                            Type = "DEPOSIT",
                         };
 
-                        transactions.OrderBy(transTime => transTime.History);
+                        transactions.Add(newDeposit);
+
+                        //transactions.OrderBy(transTime => transTime.History);
 
 
 
@@ -130,32 +159,68 @@ namespace FirstBankOfSuncoast
                         Console.WriteLine("Would you like to withdraw from Checking or Savings? ");
                         var whereWithdrawIsGoing = Console.ReadLine().Trim().ToUpper();
                         Console.WriteLine($"How much from {whereWithdrawIsGoing}? ");
-                        var amountOfWithdraw = Console.ReadLine().Trim().ToUpper();
+                        var amountOfWithdraw = Console.ReadLine();
+                        var howMuchWithdraw = int.Parse(amountOfWithdraw);
+                        var newWithdraw = new Transaction();
 
-
-                        var neWithdraw = new Transaction()
+                        //Got to add my checking and savings in withdraw
+                        if (whereWithdrawIsGoing == "CHECKING")
                         {
+                            if (totalAmountInChecking < howMuchWithdraw)
+                            {
+                                //console whatever
 
 
+                            }
+                            else
+                            {
+
+                                newWithdraw.Account = whereWithdrawIsGoing;
+                                newWithdraw.Amount = howMuchWithdraw;
+                                newWithdraw.Type = "WITHDRAW";
+
+                                transactions.Add(newWithdraw);
+
+                            }
+
+                        }
+                        else
+                        {
+                            if (totalAmountInChecking < howMuchWithdraw)
+                            {
+                                //console whatever
 
 
+                            }
+                            else
+                            {
+
+                                newWithdraw.Account = whereWithdrawIsGoing;
+                                newWithdraw.Amount = howMuchWithdraw;
+                                newWithdraw.Type = "WITHDRAW";
+
+                                transactions.Add(newWithdraw);
+
+                            }
+
+                        }
 
 
-
-                        };
                         break;
 
                     case "BALANCE":
 
                         Console.WriteLine("Here is your Checking and Savings balance ");
                         Console.WriteLine();
-                        var totalChecking = transactions.Where(totalChecking => totalChecking.Account == "Checking");
-                        var totalSavings = transactions.Count() - totalChecking.Count();
-                        Console.WriteLine($"Your Checking balance is {totalChecking.Count()} and your Savings balance is {totalSavings} ");
-
-
+                        Console.WriteLine($"Your balance in Checking is ${totalAmountInChecking} and your balance for Savings is ${totalAmountInSavings}");
 
                         break;
+
+                    case "TRANSACTION":
+                    //transactions.OrderBy(transTime => transTime.History);
+
+
+
                     default:
                         break;
 
