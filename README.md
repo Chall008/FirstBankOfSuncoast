@@ -109,4 +109,12 @@ Instead of If Statements, you can use Switch Statements
   - Console.ReadLine();
   - keep track of transactions for both Checking and Savings
 - EXIT:
+
   - Exits the app and prompts the Console.WriteLine("Thanks for visiting First Bank Of Suncoast!")
+
+  using (var fileWriter = new StreamWriter("pets.csv"))
+  {
+  // Any variable we delcare above, will automatically be _DISPOSED_ when the block is done.
+  var csvWriter = new CsvWriter(fileWriter, CultureInfo.InvariantCulture);
+  csvWriter.WriteRecords(pets);
+  }
