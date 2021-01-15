@@ -76,10 +76,10 @@ namespace FirstBankOfSuncoast
             while (userHasChosenToQuit == false)
             {
 
-                BannerMessage("Welcome to First Bank Of  ");
+                BannerMessage("Welcome to First Bank Of Suncoast!!! ");
                 Console.WriteLine();
-                Console.WriteLine("As you can see below we have some options for you to chose!");
                 Console.WriteLine();
+                Console.WriteLine("MENU OPTIONS:");
                 Console.WriteLine("DEPOSIT:");
                 Console.WriteLine("WITHRAW:");
                 Console.WriteLine("BALANCE");
@@ -101,9 +101,9 @@ namespace FirstBankOfSuncoast
                     case "DEPOSIT":
 
                         Console.WriteLine("Do you want to deposit into Checking or Savings?");
-                        var whereDepositIsGoing = Console.ReadLine().Trim().ToLower();
+                        var whereDepositIsGoing = Console.ReadLine().Trim().ToUpper();
                         Console.WriteLine($"How much into {whereDepositIsGoing}?");
-                        var amountOfDeposit = Console.ReadLine().Trim().ToLower();
+                        var amountOfDeposit = Console.ReadLine().Trim().ToUpper();
                         var howMuchDeposit = int.Parse(amountOfDeposit);
 
 
@@ -128,9 +128,9 @@ namespace FirstBankOfSuncoast
                     case "WITHDRAW":
 
                         Console.WriteLine("Would you like to withdraw from Checking or Savings? ");
-                        var whereWithdrawIsGoing = Console.ReadLine().Trim().ToLower();
+                        var whereWithdrawIsGoing = Console.ReadLine().Trim().ToUpper();
                         Console.WriteLine($"How much from {whereWithdrawIsGoing}? ");
-                        var amountOfWithdraw = Console.ReadLine().Trim().ToLower();
+                        var amountOfWithdraw = Console.ReadLine().Trim().ToUpper();
 
 
                         var neWithdraw = new Transaction()
@@ -145,44 +145,22 @@ namespace FirstBankOfSuncoast
                         };
                         break;
 
+                    case "BALANCE":
+
+                        Console.WriteLine("Here is your Checking and Savings balance ");
+                        Console.WriteLine();
+                        var totalChecking = transactions.Where(totalChecking => totalChecking.Account == "Checking");
+                        var totalSavings = transactions.Count() - totalChecking.Count();
+                        Console.WriteLine($"Your Checking balance is {totalChecking.Count()} and your Savings balance is {totalSavings} ");
 
 
 
-                        // case "BALANCE":
+                        break;
+                    default:
+                        break;
 
-                        // Console.WriteLine("Would you like you balance from Checking or Savings? ");
-                        // var whichBalanceAccount = Console.ReadLine().Trim().ToLower();
-                        // Console.WriteLine($"Here is your balance for {whichBalanceAccount}? ");
 
                 }
-
-                //                 if (userChoice == Deposit) ADD
-                //                    - Write a question(savings or checking)
-                //  --var newAccount = Answer(savings or checkings)
-                //  - How much do you want to add ?
-                //   --var newAmount = answer(How much)
-                //   --var newType = deposit(deposit or withdraw)
-
-
-                //  var newtransaction = new Transaction()
-
-
-                //  newtransaction.Account = newAccount
-                //  newtransaction.Amount = newAmount
-                //  newtransaction.Type = newType
-
-
-                //  transaction.Add(newtransaction)
-
-
-
-
-
-
-
-
-
-
 
             }
 
