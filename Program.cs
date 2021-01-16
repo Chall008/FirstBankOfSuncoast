@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using CsvHelper;
 
 namespace FirstBankOfSuncoast
 {
@@ -30,11 +33,119 @@ namespace FirstBankOfSuncoast
             Console.WriteLine();
 
         }
+        static List<Transaction> Withdraw(List<Transaction> transactions, int totalAmountInChecking, int totalAmountInSavings)
+        {
+            Console.WriteLine("Would you like to withdraw from CHECKING or SAVINGS? ");
+            var whereWithdrawIsGoing = Console.ReadLine().Trim().ToUpper();
+            Console.WriteLine($"How much from {whereWithdrawIsGoing}? ");
+            var amountOfWithdraw = Console.ReadLine();
+            var howMuchWithdraw = int.Parse(amountOfWithdraw);
+            var newWithdraw = new Transaction();
+
+            //Got to add my checking and savings in withdraw
+            if (whereWithdrawIsGoing == "CHECKING")
+            {
+                if (totalAmountInChecking < howMuchWithdraw)
+                {
+
+
+                }
+                else
+                {
+
+                    newWithdraw.Account = whereWithdrawIsGoing;
+                    newWithdraw.Amount = howMuchWithdraw;
+                    newWithdraw.Type = "WITHDRAW";
+
+                    transactions.Add(newWithdraw);
+
+                }
+
+            }
+            //
+            else
+            {
+                if (totalAmountInSavings < howMuchWithdraw)
+                {
+                    //console whatever
+
+
+                }
+                else
+                {
+
+                    newWithdraw.Account = whereWithdrawIsGoing;
+                    newWithdraw.Amount = howMuchWithdraw;
+                    newWithdraw.Type = "WITHDRAW";
+
+                    transactions.Add(newWithdraw);
+
+                }
+
+            }
+
+
+            return transactions;
+
+
+
+
+        }
+
+        static List<Transaction> Deposit(List<Transaction> transactions)
+        {
+
+            Console.WriteLine("Do you want to deposit into CHECKING or SAVINGS?");
+            var whereDepositIsGoing = Console.ReadLine().Trim().ToUpper();
+            Console.WriteLine($"How much into {whereDepositIsGoing}?");
+            var amountOfDeposit = Console.ReadLine();
+            var howMuchDeposit = int.Parse(amountOfDeposit);
+
+
+            var newDeposit = new Transaction()
+            {
+                Account = whereDepositIsGoing,
+                Amount = howMuchDeposit,
+                Type = "DEPOSIT",
+            };
+
+            transactions.Add(newDeposit);
+            return transactions;
+
+
+        }
+        static void WriteFile(List<Transaction> transactions)
+        {
+            var fileWriter = new StreamWriter("Transactions.csv");
+            var csvWriter = new CsvWriter(fileWriter, CultureInfo.InvariantCulture);
+            csvWriter.WriteRecords(transactions);
+            fileWriter.Close();
+
+
+        }
         static void Main(string[] args)
         {
-            var transactions = new List<Transaction>();
+            TextReader fileReader;
+            if (File.Exists("Transactions.csv"))
+            {
+                fileReader = new StreamReader("Transactions.csv");
+            }
+            else
+            {
+                fileReader = new StringReader("");
+            }
+            var csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+
+            var transactions = csvReader.GetRecords<Transaction>().ToList();
+            fileReader.Close();
+            // return csvReader.GetRecords<Transaction>().ToList();
+
+
+            //  List<Pet> pets = ReadPets("pets.csv");
+            // var transactions = new List<Transaction>();
 
             var userHasChosenToQuit = false;
+
 
             while (userHasChosenToQuit == false)
             {
@@ -46,7 +157,7 @@ namespace FirstBankOfSuncoast
                 Console.WriteLine("DEPOSIT");
                 Console.WriteLine("WITHRAW");
                 Console.WriteLine("BALANCE");
-                Console.WriteLine("TRANSACTIONS");
+                Console.WriteLine("VIEW");
                 Console.WriteLine("QUIT");
                 Console.WriteLine();
                 Console.WriteLine("What would you like to use? ");
@@ -92,112 +203,26 @@ namespace FirstBankOfSuncoast
                 {
                     // case "Deposit":
                     case "DEPOSIT":
-                        // - DEPOSIT:
-                        //   - Console.WriteLine("Checking or Savings?");
-                        //   - Console.ReadLine();
-                        //   - if (choice == "Checking")
-                        //     - then access Deposit information
-                        //   - if (choice == "SAVINGS")
-                        //     - then access withdraw information
-                        //   - withing Deposit add: or
-                        //   - give the total for either option: Console.WriteLine($"Your remaining Checking balance is n{number})
-
-                        Console.WriteLine("Do you want to deposit into CHECKING or SAVINGS?");
-                        var whereDepositIsGoing = Console.ReadLine().Trim().ToUpper();
-                        Console.WriteLine($"How much into {whereDepositIsGoing}?");
-                        var amountOfDeposit = Console.ReadLine();
-                        var howMuchDeposit = int.Parse(amountOfDeposit);
+                        Deposit(transactions);
 
 
-                        var newDeposit = new Transaction()
-                        {
-                            Account = whereDepositIsGoing,
-                            Amount = howMuchDeposit,
-                            Type = "DEPOSIT",
-                        };
 
-                        transactions.Add(newDeposit);
-
-                        //transactions.OrderBy(transTime => transTime.History);
-
-
+                        WriteFile(transactions);
 
                         // Write all the transactions to the file (the four lines of code for the fileWriter)
 
                         break;
 
                     case "WITHDRAW":
-                        // - WITHDRAW:
-                        //   - withing Savings add: Checking or Savings
-                        //   - Console.WriteLine("Checking or Savings?");
-                        //   - Console.ReadLine();
-                        //   - if (choice == "Checking")
-                        //     - then access Deposit information
-                        //   - if (choice == "Savings")
-                        //     - then access savings information
-                        //   - give the total for either option: Console.WriteLine($"Your remaining Savings balance is {number})
 
-                        Console.WriteLine("Would you like to withdraw from CHECKING or SAVINGS? ");
-                        var whereWithdrawIsGoing = Console.ReadLine().Trim().ToUpper();
-                        Console.WriteLine($"How much from {whereWithdrawIsGoing}? ");
-                        var amountOfWithdraw = Console.ReadLine();
-                        var howMuchWithdraw = int.Parse(amountOfWithdraw);
-                        var newWithdraw = new Transaction();
-
-                        //Got to add my checking and savings in withdraw
-                        if (whereWithdrawIsGoing == "CHECKING")
-                        {
-                            if (totalAmountInChecking < howMuchWithdraw)
-                            {
-                                //console whatever
+                        Withdraw(transactions, totalAmountInChecking, totalAmountInSavings);
+                        WriteFile(transactions);
 
 
-                            }
-                            else
-                            {
-
-                                newWithdraw.Account = whereWithdrawIsGoing;
-                                newWithdraw.Amount = howMuchWithdraw;
-                                newWithdraw.Type = "WITHDRAW";
-
-                                transactions.Add(newWithdraw);
-
-                            }
-
-                        }
-                        //
-                        else
-                        {
-                            if (totalAmountInSavings < howMuchWithdraw)
-                            {
-                                //console whatever
-
-
-                            }
-                            else
-                            {
-
-                                newWithdraw.Account = whereWithdrawIsGoing;
-                                newWithdraw.Amount = howMuchWithdraw;
-                                newWithdraw.Type = "WITHDRAW";
-
-                                transactions.Add(newWithdraw);
-
-                            }
-
-                        }
-
-                        // four lines of
                         break;
 
                     case "BALANCE":
-                        // - BALANCE:
-                        //   - Console.WriteLine("Checking or Savings)
-                        //   - if (choice == "BALANCE")
-                        //   - Console.ReadLine();
-                        //   - if (choice == "Savings")
-                        //   - Console.ReadLine();
-                        //   - keep track of transactions for both Checking and Savings
+
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine("Here is your CHECKING and SAVINGS balance. ");
@@ -206,8 +231,23 @@ namespace FirstBankOfSuncoast
                         Console.WriteLine($"Savings balance: ${totalAmountInSavings}");
                         break;
 
-                    case "TRANSACTION":
-                    //transactions.OrderBy(transTime => transTime.History);
+                    case "VIEW":
+
+
+                        transactions.OrderBy(transTime => transTime.History);
+                        Console.WriteLine();
+                        Console.WriteLine("Here is your transaction history!");
+
+
+                        foreach (var transaction in transactions)
+                        {
+                            Console.WriteLine($" ${transaction.Amount} {transaction.Type} in {transaction.Account} ");
+
+
+
+                        }
+
+                        break;
 
 
 
@@ -218,7 +258,6 @@ namespace FirstBankOfSuncoast
                 }
 
             }
-
 
             // - EXIT:
             //  Exits the app and prompts the Console.WriteLine("Thanks for visiting First Bank Of Suncoast!")
